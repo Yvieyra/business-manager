@@ -1,29 +1,33 @@
-const inquirer = require('inquirer');
-const fs = require('fs');
-const cTable = require('console.table');
+const inquirer = require('inquirer'); //using inquirer for question on the command line 
+const fs = require('fs'); //Might not need this afterall
+const cTable = require('console.table'); //using console.table package 
+const mysql = require('mysql2'); // using mysql2 package
 
-// Import and require mysql2
-const mysql = require('mysql2');
 
-// Connect to database
-const db = mysql.createConnection(
+  const start = [
     {
-      host: 'localhost',
-      // MySQL username,
-      user: 'root',
-      // TODO: Add MySQL password
-      password: 'Felizfamily2017!',
-      database: '______'
+        type: 'list',
+        name: 'action',
+        message: 'What would you like to do?',
+        choices: ['View all employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments, Add Department']
     },
-    console.log(`Connected to the ___________.`)
-  );
-
-
+]
+    inquirer.prompt(start).then((answers) => {  
+      console.log(answers.action);
+      let userChoice = answers.action;
+      //swith (if statements)
+      if (userChoice === 'View all employees') {
+        
+      }
+       (answers), (err) => 
+            err ? console.log(err) : console.log('Success') 
+        
+    });
 
 
 
 
   // Query database
-db.query('SELECT * FROM favorite_books', function (err, results) {
-    console.log(results);
-  });
+// db.query('SELECT * FROM favorite_books', function (err, results) {
+//     console.log(results);
+//   });
