@@ -30,6 +30,7 @@ const question = [
     ],
   },
 ];
+function promptUser() {
 inquirer.prompt(question).then((answers) => {
   console.log(answers.action);
   let userChoice = answers.action;
@@ -48,22 +49,25 @@ inquirer.prompt(question).then((answers) => {
   (answers), (err) => 
   err ? console.log(err) : console.log("Success");
 });
+};
 
-
+promptUser();
 
 const viewDepartments = () => {
   db.query("SELECT * FROM department", function (err, results) {
     console.table(results);
-    inquirer.prompt(question);
+    promptUser();
   });
 };
 
 const viewRoles = () => {
   db.query("SELECT * FROM roles", function (err, results) {
     console.table(results);
-    inquirer.prompt(question);
+    promptUser();
   });
 };
+
+
 // Function to add a new department
 const addDepartment = () => {
           newDepartment = [{
@@ -71,12 +75,14 @@ const addDepartment = () => {
             name: 'dept',
             message: 'What is the name of the department?',
           }]
-        }
+        
         inquirer.prompt(newDepartment).then((answers) => {
           console.log(answers.dept);
-          // db.query('INSERT INTO department (department_name) VALUES(?)', ('department_name')), function (err, results) {
-          //   console.table(results);
-        // };
+          db.query('INSERT INTO department (department_name) VALUES(?)', ('department_name'), function (err, results) {
+            console.table(results);
+        });
           (answers), (err) => 
             err ? console.log(err) : console.log('Success') 
+            promptUser();
         });
+      };
