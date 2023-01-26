@@ -64,7 +64,8 @@ const viewDepartments = () => {
 };
 
 const viewRoles = () => {
-  db.query("SELECT * FROM roles", function (err, results) { //need to correct what is being selected and joined 
+  db.query("SELECT * FROM roles", function (err, results) {
+    //need to correct what is being selected and joined
     console.table(results);
     promptUser();
   });
@@ -79,6 +80,7 @@ const addDepartment = () => {
     },
   ];
   inquirer.prompt(newDepartment).then((answers) => {
+    console.log(answers);
     const sql = `INSERT INTO department (department_name) VALUES (?)`;
     const params = [answers.dept];
 
@@ -86,7 +88,7 @@ const addDepartment = () => {
       if (err) {
         console.log("ERROR");
       } else {
-        console.table(result); //the incorrect table is displaying 
+        console.table(result); //the incorrect table is displaying
       }
       answers, (err) => (err ? console.log(err) : console.log("Success"));
       promptUser();
@@ -114,7 +116,7 @@ const addRole = () => {
   ];
   inquirer.prompt(newRole).then((answers) => {
     const sql = `INSERT INTO role (title, salary, department) VALUES (?)`;
-    const params = [answers.role, ];
+    const params = [answers.role];
 
     db.query(sql, params, (err, result) => {
       if (err) {
@@ -128,7 +130,7 @@ const addRole = () => {
   });
 };
 
-//Function to add a new department
+// Function to add a new department
 // const addDepartment = () => {
 //           newDepartment = [{
 //             type: 'input',
