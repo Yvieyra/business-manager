@@ -33,7 +33,7 @@ function promptUser() {
   inquirer.prompt(question).then((answers) => {
     console.log(answers.action);
     let userChoice = answers.action;
-    //swith (if statements)
+
     if (userChoice === "View all departments") {
       viewDepartments();
     }
@@ -47,9 +47,12 @@ function promptUser() {
     }
 
     if (userChoice === "Add role") {
-      addRole();
+      addRole(); //not functioning right now 
     }
-
+    
+    if (userChoice === "View all employees") {
+      viewEmployees();
+    }
     answers, (err) => (err ? console.log(err) : console.log("Success"));
   });
 }
@@ -64,11 +67,14 @@ const viewDepartments = () => {
 };
 
 const viewRoles = () => {
-  db.query("SELECT * FROM roles", function (err, results) {
-    //need to correct what is being selected and joined
-    console.table(results);
-    promptUser();
-  });
+  db.query(
+    "SELECT * FROM roles JOIN department ON roles.department_id = department.id",
+    function (err, results) {
+      //need to correct what is being selected and joined
+      console.table(results);
+      promptUser();
+    }
+  );
 };
 
 const addDepartment = () => {
@@ -80,7 +86,7 @@ const addDepartment = () => {
     },
   ];
   inquirer.prompt(newDepartment).then((answers) => {
-    console.log(answers);
+    console.log(answers.dept);
     const sql = `INSERT INTO department (department_name) VALUES (?)`;
     const params = [answers.dept];
 
@@ -88,7 +94,7 @@ const addDepartment = () => {
       if (err) {
         console.log("ERROR");
       } else {
-        console.table(result); //the incorrect table is displaying
+        console.log("Succesffuly added to Departments!");
       }
       answers, (err) => (err ? console.log(err) : console.log("Success"));
       promptUser();
@@ -109,19 +115,29 @@ const addRole = () => {
       message: "What is the salary?",
     },
     {
-      type: "input",
-      name: "salary",
+      type: "list",
+      name: "department",
       message: "What department does this role belong to?",
+      choices: [
+        "Sales",
+        "Engineering",
+        "Finance",
+        "Legal",
+      ],
     },
   ];
   inquirer.prompt(newRole).then((answers) => {
-    const sql = `INSERT INTO role (title, salary, department) VALUES (?)`;
-    const params = [answers.role];
+    console.log(answers.role);
+    console.log(answers.salary);
+    console.log(answers.department);
+    const sql = `INSERT INTO role (title, salary, department.department_name) VALUES (?, ?, ?)`;
+    const params = [answers.role, answers.salary, answers.department];
 
     db.query(sql, params, (err, result) => {
       if (err) {
         console.log("ERROR");
       } else {
+
         console.table(result);
       }
       answers, (err) => (err ? console.log(err) : console.log("Success"));
@@ -130,22 +146,11 @@ const addRole = () => {
   });
 };
 
-// Function to add a new department
-// const addDepartment = () => {
-//           newDepartment = [{
-//             type: 'input',
-//             name: 'dept',
-//             message: 'What is the name of the department?',
-//           }]
+const viewEmployees = () => { //need to filter out results, have what it needed plus some duplicated Id's
+  db.query("SELECT * FROM employee JOIN roles ON employee.role_id = roles.id JOIN department ON roles.department_id = department.id;", function (err, results) {
+    console.table(results);
+    promptUser();
+  });
+};
 
-//         inquirer.prompt(newDepartment).then((answers) => {
-//           console.log(answers.dept);
-//          const params = [answers.dept]
-//           db.query('INSERT INTO department (department_name) VALUES(?)', params, function (err, results) {
-//             console.table(results);
-//         });
-//           (answers), (err) =>
-//             err ? console.log(err) : console.log('Success')
-//             promptUser();
-//         });
-//       };
+
